@@ -7,30 +7,28 @@ import ExpensesFilter from "./ExpensesFilter";
 function Expenses(props) {
   const [year, setYear] = useState("2021");
 
-  // let infoText = "2019, 2020 & 2021";
-
-  // if (year === "2019") {
-  //   infoText = "2020, 2021, 2022";
-  // } else if (year === "2020") {
-  //   infoText = "2019, 2021, 2022";
-  // } else if (year === "2021") {
-  //   infoText = "2019, 2020, 2022";
-  // } else if (year === "2022") {
-  //   infoText = "2019, 2020, 2021";
-  // }
-
   const yearChoiceHandler = (enteredYear) => {
     setYear(enteredYear);
   };
 
+  const filteredItems = props.items.filter((item) => {
+    return item.date.getFullYear().toString() === year;
+  });
+
   return (
     <Card className="expenses">
       <ExpensesFilter selected={year} onYearChoice={yearChoiceHandler} />
-      {/* <p>Data from {infoText} is Hidden</p> */}
-      <ExpenseItem expense={props.items[0]} />
-      <ExpenseItem expense={props.items[1]} />
-      <ExpenseItem expense={props.items[2]} />
-      <ExpenseItem expense={props.items[3]} />
+      {filteredItems.length === 0 && <p>No expenses found.</p>}
+      {filteredItems.length > 0 &&
+        filteredItems.map((expense) => (
+          <ExpenseItem
+            key={expense.id}
+            title={expense.title}
+            amount={expense.amount}
+            date={expense.date}
+          />
+        ))
+      }
     </Card>
   );
 }
